@@ -176,6 +176,34 @@
     @keyframes pulseGlow{0%{box-shadow:0 0 20px rgba(0,0,0,.6) inset,0 0 15px var(--glow-accent)}50%{box-shadow:0 0 20px rgba(0,0,0,.6) inset,0 0 30px var(--glow-accent)}100%{box-shadow:0 0 20px rgba(0,0,0,.6) inset,0 0 15px var(--glow-accent)}}
 
     /* ===== New styles for features ===== */
+    /* ===== Contract documents grid ===== */
+    .contracts-intro{color:var(--muted);margin:0 0 22px;line-height:1.7;font-size:.97em;border-left:3px solid var(--brand);padding-left:14px;background:rgba(102,179,255,.05);border-radius:0 10px 10px 0;padding:12px 14px}
+    .contract-featured-wrap{margin-bottom:22px}
+    .contract-featured{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,rgba(102,179,255,.12),rgba(0,230,184,.08));border:1px solid rgba(102,179,255,.35);border-radius:16px;padding:18px 20px;transition:box-shadow .25s ease,transform .25s ease}
+    .contract-featured:hover{box-shadow:0 6px 24px var(--glow-brand);transform:translateY(-2px)}
+    .contract-icon-lg{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--accent));display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 4px 15px var(--glow-brand)}
+    .contract-featured-meta{flex:1;min-width:0}
+    .contract-featured-label{font-size:.75em;font-weight:700;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:3px}
+    .contract-featured-title{font-size:1.1em;font-weight:700;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .contract-featured-sub{font-size:.85em;color:var(--muted)}
+    .contract-featured-btn{flex-shrink:0;padding:10px 20px;border:1px solid var(--brand);border-radius:12px;background:var(--brand);color:#fff;font-weight:600;font-size:.95em;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;white-space:nowrap}
+    .contract-featured-btn:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 14px var(--glow-accent)}
+    .contracts-divider{display:flex;align-items:center;gap:14px;margin:18px 0 16px;color:var(--muted);font-size:.85em;font-weight:600;letter-spacing:.8px;text-transform:uppercase}
+    .contracts-divider::before,.contracts-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .contracts-addenda{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+    .contract-item{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:13px 15px;transition:border-color .2s ease,background .2s ease,transform .2s ease;text-decoration:none;color:var(--text)}
+    .contract-item:hover{border-color:var(--brand);background:rgba(102,179,255,.07);transform:translateY(-1px);color:var(--text)}
+    .contract-item-icon{width:36px;height:36px;border-radius:9px;background:rgba(102,179,255,.12);border:1px solid rgba(102,179,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .contract-item-meta{flex:1;min-width:0}
+    .contract-item-code{font-size:.72em;font-weight:700;color:var(--brand);letter-spacing:.8px;text-transform:uppercase}
+    .contract-item-name{font-size:.88em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;margin-top:2px}
+    .contract-item-arrow{color:var(--brand);font-size:16px;flex-shrink:0;opacity:.7}
+    .contract-item:hover .contract-item-arrow{opacity:1}
+    /* Airtable-specific fillable contract slot */
+    #contractCards:empty{display:none}
+    #fillableContractSlot:empty{display:none}
+    @media (max-width:600px){.contract-featured{flex-wrap:wrap;gap:12px}.contract-featured-btn{width:100%;text-align:center}.contracts-addenda{grid-template-columns:1fr}}
+
     .feature-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;padding:6px 0}
     .feature-list li{border:0;padding:0;display:flex;align-items:flex-start;gap:10px}
     .feature-list li::before{content:"•";opacity:.55;line-height:1.2}
@@ -269,10 +297,169 @@
         <div id="builderCards" class="card-container"></div>
       </div>
 
-      <div class="card reveal" id="contractsCard" style="display:none;">
-        <h3>Builder Contracts</h3>
-        <div id="contractCards" class="card-container"></div>
-      </div>
+      <div class="card reveal" id="contractsCard">
+        <h3>📋 Contract Documents</h3>
+
+        <div class="contracts-intro">
+          To submit an offer on this new construction home, download and review the applicable forms below.
+          Not every addendum will apply to every transaction — your agent will confirm which documents
+          are required for your offer.
+        </div>
+
+        <!-- Airtable-driven fillable/project-specific contract (shown when set in Airtable) -->
+        <div id="fillableContractSlot"></div>
+
+        <!-- Primary contract: always shown -->
+        <div class="contract-featured-wrap">
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5dbd0b572ca77465b.pdf"
+             target="_blank" rel="noopener" class="contract-featured"
+             onclick="track('contract_download',{form:'04.1 Completed Home Contract'})">
+            <div class="contract-icon-lg">🏠</div>
+            <div class="contract-featured-meta">
+              <div class="contract-featured-label">Primary Contract</div>
+              <div class="contract-featured-title">04.1 Completed Home Contract</div>
+              <div class="contract-featured-sub">New Construction — Completed Home</div>
+            </div>
+            <div class="contract-featured-btn">⬇ Download</div>
+          </a>
+        </div>
+
+        <div class="contracts-divider">Required Addenda &amp; Disclosures</div>
+
+        <div class="contracts-addenda">
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5f31aa9728fe9ccce.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-01'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-01</div>
+              <div class="contract-item-name">Legal Description</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f52f4795ad7b21e0cb.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-02'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-02</div>
+              <div class="contract-item-name">Special Provisions</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5c2565993f0b98c08.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-03'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-03</div>
+              <div class="contract-item-name">Financing</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5c256597279b98c26.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-04'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-04</div>
+              <div class="contract-item-name">Addendum — Mandatory HOA Membership</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5471c65ef93047d46.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-06'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-06</div>
+              <div class="contract-item-name">Final Walk-Thru &amp; Punch List</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5b2e79a3368ccffe6.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-08'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-08</div>
+              <div class="contract-item-name">Real Estate Broker's Fee</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5c25659b40ab98c1f.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-10'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-10</div>
+              <div class="contract-item-name">Assignment of Manufactured Product Warranties</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5c2565993f0b98c08.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-11'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-11</div>
+              <div class="contract-item-name">Notice Regarding Expansive Soils</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5dbd0b50a3d77467d.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-12'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-12</div>
+              <div class="contract-item-name">Green Building Disclosure</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5dbd0b568d577467e.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-13'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-13</div>
+              <div class="contract-item-name">Express Limited Home Warranty</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f55b5b9d5d2e532958.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-14'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-14</div>
+              <div class="contract-item-name">Homeowner Maintenance Guidelines</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+
+          <a href="https://assets.cdn.filesafe.space/UryrOQKz7XrlpqiWvJGM/media/69cbc2f5f31aa98104e9cccf.pdf"
+             target="_blank" rel="noopener" class="contract-item"
+             onclick="track('contract_download',{form:'C-15'})">
+            <div class="contract-item-icon">📄</div>
+            <div class="contract-item-meta">
+              <div class="contract-item-code">C-15</div>
+              <div class="contract-item-name">Notice — Heating &amp; Cooling Equipment</div>
+            </div>
+            <div class="contract-item-arrow">›</div>
+          </a>
+        </div><!-- /.contracts-addenda -->
+      </div><!-- /#contractsCard -->
 
       <div id="mediaEmbeds" class="media-section"></div>
     </section>
@@ -737,64 +924,26 @@
 
       attachReadMore('builder-rm-0','builderModal',aboutLatrice,'builder_readmore',nameLatrice);
       attachReadMore('builder-rm-1','builderModal',aboutJT,'builder_readmore',nameJT);
-           // Builder contract cards
-      const contractsCard = document.getElementById('contractsCard');
-      const contractCards = document.getElementById('contractCards');
-      if (contractsCard && contractCards) {
-        contractCards.innerHTML = '';
-
-        const downloadContract = asText(p['Download Builder Contract Forms']);
+           // Airtable-specific fillable contract (project-specific, optional)
+      const fillableSlot = document.getElementById('fillableContractSlot');
+      if (fillableSlot) {
         const fillableContract = asText(p['Fillable Builder Contract']);
-
-        const items = [];
-        if (downloadContract) {
-          items.push({
-            title: 'Download Builder Contract Forms',
-            subtitle: 'Download the builder contract packet.',
-            url: downloadContract
-          });
-        }
         if (fillableContract) {
-          items.push({
-            title: 'Fillable Builder Contract',
-            subtitle: 'Complete the builder contract online.',
-            url: fillableContract
-          });
-        }
-
-        if (!items.length) {
-          // hide the whole section if nothing is set in Airtable
-          contractsCard.style.display = 'none';
-        } else {
-          contractsCard.style.display = '';
-          items.forEach(item => {
-            const div = document.createElement('div');
-            // use agent-card styles so it looks like the Listing Agents cards
-            div.className = 'card reveal agent-card contract-card';
-            div.innerHTML = `
-              <div class="agent-top">
-                <div class="agent-avatar" style="display:flex;align-items:center;justify-content:center;font-size:24px;">
-                  📄
+          fillableSlot.innerHTML = `
+            <div style="margin-bottom:18px;">
+              <a href="${fillableContract}" target="_blank" rel="noopener"
+                 class="contract-featured"
+                 style="background:linear-gradient(135deg,rgba(0,230,184,.12),rgba(102,179,255,.08));border-color:rgba(0,230,184,.4);"
+                 onclick="track('contract_download',{form:'Fillable Builder Contract'})">
+                <div class="contract-icon-lg" style="background:linear-gradient(135deg,var(--accent),var(--brand));">✏️</div>
+                <div class="contract-featured-meta">
+                  <div class="contract-featured-label" style="color:var(--accent);">This Property</div>
+                  <div class="contract-featured-title">Fillable Builder Contract</div>
+                  <div class="contract-featured-sub">Pre-filled for this specific property</div>
                 </div>
-                <div class="agent-meta">
-                  <div class="agent-name">${escHTML(item.title)}</div>
-                  <div class="agent-tag">${escHTML(item.subtitle)}</div>
-                </div>
-              </div>
-              <div class="agent-actions">
-                <a
-                  href="${item.url}"
-                  target="_blank"
-                  rel="noopener"
-                  class="icon-btn"
-                  onclick="track('builder_contract_click',{ type: '${item.title.replace(/'/g,"\\'")}' })"
-                >
-                  Open
-                </a>
-              </div>
-            `;
-            contractCards.appendChild(div);
-          });
+                <div class="contract-featured-btn" style="background:var(--accent);border-color:var(--accent);">⬇ Download</div>
+              </a>
+            </div>`;
         }
       }
 
