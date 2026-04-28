@@ -34,6 +34,8 @@
         s.referrerPolicy = 'no-referrer';
         s.onload = function(){
           if (window.L && window.L.map) {
+            // Stash a private copy — chat widget vendors clobber window.L later
+            window.__leaflet = window.L;
             console.log('[Leaflet] loaded from', url, 'version', window.L.version);
             resolve();
           } else {
@@ -724,6 +726,12 @@
     }
 
     async function initMapLeaflet(p){
+      // Use our stashed Leaflet — window.L may have been overwritten by other scripts
+      const LL = window.__leaflet || window.L;
+      if (!LL || !LL.map) throw new Error('Leaflet (L) not available');
+      // Restore window.L too in case any other code expects it
+      if (!window.L || !window.L.map) window.L = LL;
+
       const mapEl=document.getElementById('map');
       // If lat/lng are missing but we have an address, geocode it
       if((!p.Latitude||!p.Longitude) && p.Address){
@@ -735,9 +743,9 @@
       }
       if(!p.Latitude||!p.Longitude){mapEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);">Location not available.</div>';return;}
       const center=[p.Latitude,p.Longitude];
-      const map=L.map(mapEl,{zoomControl:true,scrollWheelZoom:false}).setView(center,14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
-      L.marker(center).addTo(map).bindPopup(`<b>${p['Project Name']||'Project'}</b><br>${p.Address||'Location'}`).openPopup();
+      const map=LL.map(mapEl,{zoomControl:true,scrollWheelZoom:false}).setView(center,14);
+      LL.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+      LL.marker(center).addTo(map).bindPopup(`<b>${p['Project Name']||'Project'}</b><br>${p.Address||'Location'}`).openPopup();
       searchAndDisplayAmenities(p,'nearbyList','restaurant|hospital|cafe|bar|park|supermarket|pharmacy|bank|fitness_centre','amenities');
       searchAndDisplayAmenities(p,'schoolsList','school','schools');
     }
