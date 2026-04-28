@@ -677,8 +677,26 @@
         .catch(e=>{console.error('Overpass API error:',e);list.innerHTML='<li class="nearby-item"><small>Could not load nearby '+title.toLowerCase()+'. Please try refreshing.</small></li>';});
     }
 
-    function initMapLeaflet(p){
+    // Geocode an address via OpenStreetMap Nominatim (free, no key)
+    async function geocodeAddress(address){
+      const url=`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+      const res=await fetch(url);
+      if(!res.ok) throw new Error('Geocoding request failed ('+res.status+')');
+      const data=await res.json();
+      if(!Array.isArray(data)||data.length===0) throw new Error('Address not found');
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+
+    async function initMapLeaflet(p){
       const mapEl=document.getElementById('map');
+      // If lat/lng are missing but we have an address, geocode it
+      if((!p.Latitude||!p.Longitude) && p.Address){
+        try{
+          mapEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);">Locating address…</div>';
+          const r=await geocodeAddress(p.Address);
+          p.Latitude=r.lat; p.Longitude=r.lng;
+        }catch(err){ console.warn('Geocode failed:',err); }
+      }
       if(!p.Latitude||!p.Longitude){mapEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);">Location not available.</div>';return;}
       const center=[p.Latitude,p.Longitude];
       const map=L.map(mapEl,{zoomControl:true,scrollWheelZoom:false}).setView(center,14);
@@ -1070,13 +1088,15 @@
         if (typeof L === 'undefined' || !L.map) {
           throw new Error('Leaflet (L) not available');
         }
-        initMapLeaflet(p);
+        initMapLeaflet(p).catch(mapErr => {
+          console.error('Map failed:', mapErr);
+          const mapEl = document.getElementById('map');
+          if (mapEl) mapEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);">Map unavailable.</div>';
+        });
       } catch (mapErr) {
         console.error('Map failed:', mapErr);
         const mapEl = document.getElementById('map');
-        if (mapEl) {
-          mapEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);">Map unavailable.</div>';
-        }
+        if (mapEl) mapEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);">Map unavailable.</div>';
       }
     }
 
